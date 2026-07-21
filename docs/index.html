@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CopyrightKiller — Downloads</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0f1419;
+      --card: #1a2332;
+      --text: #e8edf4;
+      --muted: #8b9cb3;
+      --accent: #7c5cff;
+      --accent-hover: #9580ff;
+      --border: #2a3548;
+      --error: #ff6b6b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .card {
+      width: 100%;
+      max-width: 28rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+    h1 {
+      margin: 0 0 0.25rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    .subtitle {
+      margin: 0 0 1.5rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      margin-bottom: 1rem;
+    }
+    input[type="password"]:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+    button, .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: none;
+      border-radius: 8px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+    button[type="submit"], .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    button[type="submit"]:hover, .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      margin-top: 0.75rem;
+    }
+    .btn-secondary:hover {
+      border-color: var(--muted);
+    }
+    .error {
+      color: var(--error);
+      font-size: 0.9rem;
+      margin: 0 0 1rem;
+      min-height: 1.25rem;
+    }
+    #downloads { display: none; }
+    #downloads.visible { display: block; }
+    .version {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+    .download-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .note {
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .mac-help {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    .mac-help summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .mac-help ol {
+      margin: 0.75rem 0 0;
+      padding-left: 1.25rem;
+    }
+    .mac-help code {
+      display: block;
+      margin: 0.4rem 0;
+      padding: 0.5rem;
+      border-radius: 6px;
+      background: var(--bg);
+      overflow-wrap: anywhere;
+      user-select: all;
+    }
+    #gate { display: block; }
+    #gate.hidden { display: none; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>CopyrightKiller</h1>
+    <p class="subtitle">Music clearance — team downloads</p>
+
+    <section id="gate">
+      <form id="loginForm">
+        <label for="password">Team password</label>
+        <input id="password" type="password" autocomplete="current-password" required />
+        <p class="error" id="loginError" aria-live="polite"></p>
+        <button type="submit">Continue</button>
+      </form>
+    </section>
+
+    <section id="downloads">
+      <p class="version">Latest version: <strong id="versionLabel">…</strong></p>
+      <div class="download-list" id="downloadList"></div>
+      <p class="note" id="statusNote"></p>
+      <details class="mac-help">
+        <summary>Mac says CopyrightKiller is damaged?</summary>
+        <ol>
+          <li>Drag CopyrightKiller from the disk image to <strong>Applications</strong>. Do not open it from the disk image.</li>
+          <li>Open <strong>Terminal</strong> (Applications → Utilities → Terminal).</li>
+          <li>Paste this command and press Return:
+            <code>xattr -cr "/Applications/CopyrightKiller.app"</code>
+          </li>
+          <li>Open CopyrightKiller from Applications. If prompted, right-click it and choose <strong>Open</strong>.</li>
+        </ol>
+        <p>This removes the download quarantine flag from this unsigned internal app.</p>
+      </details>
+      <button type="button" class="btn btn-secondary" id="logoutBtn">Lock page</button>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      // Team password hash only — rotate with releases-site/tools/hash-password.html
+      const PASSWORD_HASH = "816fedae94e5f652b9410f76da39c95d23fb74e63efa1e7301124c863e9aa2d2";
+      const MANIFEST_URL =
+        "https://raw.githubusercontent.com/samstriker2938429310478097/CopyrightKiller-releases/main/updates/latest.json";
+      const SESSION_KEY = "copyrightkiller_downloads_unlocked";
+
+      const gate = document.getElementById("gate");
+      const downloads = document.getElementById("downloads");
+      const loginForm = document.getElementById("loginForm");
+      const loginError = document.getElementById("loginError");
+      const passwordInput = document.getElementById("password");
+      const versionLabel = document.getElementById("versionLabel");
+      const downloadList = document.getElementById("downloadList");
+      const statusNote = document.getElementById("statusNote");
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      async function sha256(text) {
+        const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+        return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      function showDownloads() {
+        gate.classList.add("hidden");
+        downloads.classList.add("visible");
+        sessionStorage.setItem(SESSION_KEY, "1");
+        loadManifest();
+      }
+
+      function lockPage() {
+        sessionStorage.removeItem(SESSION_KEY);
+        gate.classList.remove("hidden");
+        downloads.classList.remove("visible");
+        passwordInput.value = "";
+        loginError.textContent = "";
+      }
+
+      function addDownloadButton(label, url) {
+        const link = document.createElement("a");
+        link.className = "btn btn-primary";
+        link.href = url;
+        link.textContent = label;
+        link.rel = "noopener noreferrer";
+        downloadList.appendChild(link);
+      }
+
+      async function loadManifest() {
+        versionLabel.textContent = "…";
+        downloadList.innerHTML = "";
+        statusNote.textContent = "Loading release info…";
+
+        try {
+          const response = await fetch(`${MANIFEST_URL}?t=${Date.now()}`, { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const manifest = await response.json();
+          const version = manifest.version || "unknown";
+          versionLabel.textContent = `v${String(version).replace(/^v/i, "")}`;
+
+          const macArmUrl = manifest.mac_arm64_url || manifest.mac_url;
+          const macIntelUrl = manifest.mac_intel_url;
+          const windowsUrl = manifest.windows_url;
+
+          if (macArmUrl) {
+            addDownloadButton("Download for Mac — Apple Silicon (.dmg)", macArmUrl);
+          }
+          if (macIntelUrl) {
+            addDownloadButton("Download for Mac — Intel (.dmg)", macIntelUrl);
+          }
+          if (windowsUrl) {
+            addDownloadButton("Download for Windows (.zip)", windowsUrl);
+          }
+
+          if (!macArmUrl && !macIntelUrl && !windowsUrl) {
+            statusNote.textContent =
+              "No direct download links yet. Ask your admin to publish a release.";
+          } else {
+            statusNote.textContent =
+              "Apple Silicon Macs (M1/M2/M3…): use the Apple Silicon download. Older Intel Macs: use the Intel download. Open the .dmg and drag CopyrightKiller to Applications before opening it. Windows: unzip and run Install.bat (or CopyrightKiller.exe). Google and SoundCloud sign-in open in your browser on first use; team defaults are built in.";
+          }
+        } catch (error) {
+          statusNote.textContent =
+            "Could not load release info. Try again later or ask your admin.";
+          console.warn("[CopyrightKiller downloads]", error);
+        }
+      }
+
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        loginError.textContent = "";
+
+        const entered = passwordInput.value;
+        const hash = await sha256(entered);
+
+        if (hash === PASSWORD_HASH) {
+          showDownloads();
+          return;
+        }
+
+        loginError.textContent = "Wrong password. Ask your team lead if you need it.";
+      });
+
+      logoutBtn.addEventListener("click", lockPage);
+
+      if (sessionStorage.getItem(SESSION_KEY) === "1") {
+        showDownloads();
+      }
+    })();
+  </script>
+</body>
+</html>
