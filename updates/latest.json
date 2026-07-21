@@ -1,9 +1,9 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.3",
   "download_page_url": "https://samstriker2938429310478097.github.io/CopyrightKiller-releases/",
   "release_url": "https://samstriker2938429310478097.github.io/CopyrightKiller-releases/",
-  "mac_arm64_url": "https://github.com/samstriker2938429310478097/CopyrightKiller-releases/releases/download/v0.1.0/CopyrightKiller_0.1.0_macos_arm64.dmg",
-  "mac_intel_url": "https://github.com/samstriker2938429310478097/CopyrightKiller-releases/releases/download/v0.1.0/CopyrightKiller_0.1.0_macos_x86_64.dmg",
-  "mac_url": "https://github.com/samstriker2938429310478097/CopyrightKiller-releases/releases/download/v0.1.0/CopyrightKiller_0.1.0_macos_arm64.dmg",
-  "windows_url": "https://github.com/samstriker2938429310478097/CopyrightKiller-releases/releases/download/v0.1.0/CopyrightKiller_0.1.0_windows.zip"
+  "mac_arm64_url": "https://github.com/samstriker2938429310478097/CopyrightKiller-releases/releases/download/v0.1.3/CopyrightKiller_0.1.3_macos_arm64.dmg",
+  "mac_intel_url": "https://github.com/samstriker2938429310478097/CopyrightKiller-releases/releases/download/v0.1.3/CopyrightKiller_0.1.3_macos_x86_64.dmg",
+  "mac_url": "https://github.com/samstriker2938429310478097/CopyrightKiller-releases/releases/download/v0.1.3/CopyrightKiller_0.1.3_macos_arm64.dmg",
+  "windows_url": "https://github.com/samstriker2938429310478097/CopyrightKiller-releases/releases/download/v0.1.3/CopyrightKiller_0.1.3_windows.zip"
 }
